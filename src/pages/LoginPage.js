@@ -1,64 +1,78 @@
 
 import styled from "styled-components"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import logo from "../assets/logo.png"
+import axios from "axios"
+import { useContext, useState } from "react"
+import tokenContext from "../contexts/tokenContext"
+import userContext from "../contexts/userContext"
+
 
 
 export default function LoginPage() {
-    // const [form, setForm] = useState({ email: "", password: "" })
-    // const [isLoading, setIsLoading] = useState(false)
-    // const { setUser } = useContext(UserContext)
-    // const navigate = useNavigate()
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
+  const {setToken} = useContext(tokenContext)
+  const {setUser} = useContext(userContext)
+  const navigate = useNavigate()
 
-    // function handleForm(e) {
-    //     setForm({ ...form, [e.target.name]: e.target.value })
-    // }
 
-    // function handleLogin(e) {
-    //     e.preventDefault()
-    //     setIsLoading(true)
 
-    //     apiAuth.login(form)
-    //         .then(res => {
-    //             const { id, name, image, token } = res.data
-    //             setIsLoading(false)
-    //             setUser({ id, name, image, token })
-    //             // localStorage.setItem("token", token)
-    //             localStorage.setItem("user", JSON.stringify({ id, name, image, token }))
-    //             navigate("/hoje")
-    //         })
-    //         .catch(err => {
-    //             setIsLoading(false)
-    //             alert(err.response.data.message)
-    //         })
-    // }
+  function handleLogin(e) {
+    e.preventDefault()
 
-    return (
-        <Container>
-            <img src={logo} alt="Logotipo" />
-            <StyledForm >
-                <StyledInput
-                    name="email"
-                    placeholder="E-mail"
-                    type="email"
-                    required
-                />
-                <StyledInput
-                    name="password"
-                    placeholder="Senha"
-                    type="password"
-                    required
-                />
-                <StyledButton type="submit">
-                    Entrar
-                </StyledButton>
-            </StyledForm>
+    const body = { email, password }
 
-            <StyledLink to="/cadastro">
-                Primeira vez? Cadastre-se!
-            </StyledLink>
-        </Container>
-    )
+    const promise = axios.post(`${process.env.REACT_APP_API_URL}/login`, body)
+
+    promise.then(res => {
+      console.log(res.data)
+      setToken(res.data.token)
+      setUser(res.data.checkUser.name)
+      console.log(res.data.token)
+      navigate("/home")
+    })
+    promise.catch(err => {
+      alert(err.response.data.message)
+      setPassword("")
+      setEmail("")
+    })
+
+  }
+
+
+  return (
+    <Container>
+      <img src={logo} alt="Logotipo" />
+      <StyledForm onSubmit={handleLogin}>
+        <StyledInput
+          data-test="email"
+          name="email"
+          placeholder="E-mail"
+          type="email"
+          value={email}
+          onChange={e => setEmail(e.target.value)}
+          required
+        />
+        <StyledInput
+          data-test="password"
+          name="password"
+          placeholder="Senha"
+          type="password"
+          value={password}
+          onChange={e => setPassword(e.target.value)}
+          required
+        />
+        <StyledButton data-test="sign-in-submit" type="submit">
+          Entrar
+        </StyledButton>
+      </StyledForm>
+
+      <StyledLink to="/cadastro">
+        Primeira vez? Cadastre-se!
+      </StyledLink>
+    </Container>
+  )
 }
 
 const Container = styled.div`

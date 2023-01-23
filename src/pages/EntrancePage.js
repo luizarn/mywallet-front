@@ -1,9 +1,41 @@
-
+import { useContext, useState } from "react"
 import styled from "styled-components"
-
+import tokenContext from "../contexts/tokenContext"
+import axios from "axios"
+import userContext from "../contexts/userContext"
+import { useNavigate } from "react-router-dom"
 
 
 export default function EntrancePage() {
+  const { token } = useContext(tokenContext)
+  const { user } = useContext(userContext)
+  const [value, setValue] = useState("")
+  const [description, setDescription] = useState("")
+  const navigate = useNavigate();
+
+  function handleEntry(e) {
+    e.preventDefault()
+    let renderValue = Number(value)
+
+    const body = { value: renderValue, description }
+
+    const promise = axios.post(`${process.env.REACT_APP_API_URL}/new-entrance`, body, {
+      headers:
+        { Authorization: `Bearer ${token}`, user }
+    })
+
+    promise.then(res => {
+      console.log(res.data)
+      console.log(res.data.token)
+      navigate("/home")
+    })
+    promise.catch(err => {
+      alert(err.response.data.message)
+      setDescription("")
+      setValue("")
+    })
+
+  }
 
   return (
     <Container>
@@ -11,23 +43,29 @@ export default function EntrancePage() {
         <StyledTitle>Nova entrada</StyledTitle>
 
       </MenuContainer>
-      <StyledForm >
-                <StyledInput
-                    name="value"
-                    placeholder="Valor"
-                    type="number"
-                    required
-                />
-                <StyledInput
-                    name="description"
-                    placeholder="Descrição"
-                    type="text"
-                    required
-                />
-                <StyledButton type="submit">
-                   Salvar entrada
-                </StyledButton>
-        </StyledForm>
+      <StyledForm onSubmit={handleEntry}>
+        <StyledInput
+          data-test="registry-amount-input"
+          name="value"
+          placeholder="Valor"
+          type="number"
+          value={value}
+          onChange={e => setValue(e.target.value)}
+          required
+        />
+        <StyledInput
+          data-test="registry-name-input"
+          name="description"
+          placeholder="Descrição"
+          type="text"
+          value={description}
+          onChange={e => setDescription(e.target.value)}
+          required
+        />
+        <StyledButton type="submit" data-test="registry-save">
+          Salvar entrada
+        </StyledButton>
+      </StyledForm>
     </Container>
   )
 }

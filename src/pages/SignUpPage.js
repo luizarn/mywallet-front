@@ -1,70 +1,95 @@
 import logo from "../assets/logo.png"
 import styled from "styled-components"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
+import axios from "axios"
+import { useState } from "react"
+
 
 
 export default function SignUpPage() {
-    // const [form, setForm] = useState({ email: "", password: "", name: "", image:"" })
-    // const [isLoading, setIsLoading] = useState(false)
-    // const navigate = useNavigate()
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
+  const [name, setName] = useState("")
+  const [confirmPassword, setconfirmPassword] = useState("")
+  const navigate = useNavigate()
 
-    // function handleForm(e) {
-    //     setForm({ ...form, [e.target.name]: e.target.value })
-    // }
 
-    // function handleSignUp(e) {
-    //     e.preventDefault()
-    //     setIsLoading(true)
 
-    //     apiAuth.signUp(form)
-    //     .then(res => {
-    //         setIsLoading(false)
-    //         navigate("/")
-    //     })
-    //     .catch(err => {
-    //         setIsLoading(false)
-    //         alert(err.response.data.message)
-    //     })
-    // }
 
-    return (
-        <Container>
-            <img src={logo} alt="Logotipo" />
-            <StyledForm>
-                <StyledInput
-                    name="name"
-                    placeholder="Nome"
-                    type="text"
-                    required
-                />
-                <StyledInput
-                    name="email"
-                    placeholder="E-mail"
-                    type="email"
-                    required
-                />
-                <StyledInput
-                    name="password"
-                    placeholder="Senha"
-                    type="password"
-                    required
-                />
-                <StyledInput
-                    name="password"
-                    placeholder="Confirme a senha"
-                    type="password"
-                    required
-                />
-                <StyledButton type="submit">
-                    Cadastrar
-                </StyledButton>
-            </StyledForm>
+  function addUser(e) {
+    e.preventDefault()
+    const body = {
+      name, email, password, confirmPassword
+    }
 
-            <StyledLink to="/">
-                Já tem uma conta? Entre agora!
-            </StyledLink>
-        </Container>
-    )
+    const promise = axios.post(`${process.env.REACT_APP_API_URL}/sign-up`, body)
+    console.log(promise)
+
+    promise.then(res => {
+      console.log(res)
+      navigate("/")
+    })
+    promise.catch(err => {
+      alert(err.response.data.message)
+      setName("")
+      setPassword("")
+      setconfirmPassword("")
+      setEmail("")
+    })
+
+  }
+
+
+  return (
+    <Container>
+      <img src={logo} alt="Logotipo" />
+      <StyledForm onSubmit={addUser}>
+        <StyledInput
+          data-test="name"
+          name="name"
+          placeholder="Nome"
+          type="text"
+          value={name}
+          onChange={e => setName(e.target.value)}
+          required
+        />
+        <StyledInput
+          data-test="email"
+          name="email"
+          placeholder="E-mail"
+          type="email"
+          value={email}
+          onChange={e => setEmail(e.target.value)}
+          required
+        />
+        <StyledInput
+          data-test="password"
+          name="password"
+          placeholder="Senha"
+          type="password"
+          value={password}
+          onChange={e => setPassword(e.target.value)}
+          required
+        />
+        <StyledInput
+          data-test="conf-password"
+          name="confirmpassword"
+          placeholder="Confirme a senha"
+          type="password"
+          value={confirmPassword}
+          onChange={e => setconfirmPassword(e.target.value)}
+          required
+        />
+        <StyledButton data-test="sign-up-submit" type="submit">
+          Cadastrar
+        </StyledButton>
+      </StyledForm>
+
+      <StyledLink to="/">
+        Já tem uma conta? Entre agora!
+      </StyledLink>
+    </Container>
+  )
 }
 
 const Container = styled.div`
