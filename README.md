@@ -5,4 +5,5 @@ It's a cost control app. It is possible to register cash inflows and outflows an
 Here are some technologies used:
 HTML, CSS, JavaScript, React, Node, Express and MongoDB.
 
+link to the back-end: https://github.com/luizarn/mywallet-back
 #
