@@ -1,6 +1,10 @@
 # MyWallet
 Bem-vindo ao Aplicativo de Controle de Custos! Este aplicativo permite registrar entradas e saídas de dinheiro e acompanhar o seu saldo. O front-end e o back-end (incluindo o banco de dados) deste projeto são desenvolvidos em repositórios separados, ambos disponíveis no meu perfil. Trata-se de um projeto full-stack que utiliza diversas tecnologias, como HTML, CSS, JavaScript, React, Node, Express e MongoDB.
 
+<p align="center">
+  <img width="400" height="700" src="src/assets/mywallet.gif">
+</p>
+
 ***Como executar o projeto***
 Siga as instruções abaixo para executar o projeto em sua máquina local:
 
